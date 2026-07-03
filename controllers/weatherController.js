@@ -1,8 +1,13 @@
 const crypto = require('crypto');
 const getWeather = require('../services/openMeteoService');
 const { buscarCacheValido, salvarCache, atualizarCache } = require('../repositories/weatherCacheRepository');
+const { obterInsight } = require('../services/insightService');
+const gerarHash = require('../util/gerarHash');
 
 module.exports.buscarClima = async (req, res) => {
+    let dadosClimaticos;
+    let weatherHash;
+
     try {
         const { latitude, longitude } = req.query;
 
@@ -15,32 +20,34 @@ module.exports.buscarClima = async (req, res) => {
         const cache = await buscarCacheValido(Number(latitude), Number(longitude));
         if (cache) {
             console.log('CACHE HIT');
-            return res.json({
-                sucess: true,
-                data: cache.rawData
-            })
+            dadosClimaticos = cache.rawData;
+            weatherHash = cache.weatherHash;
+        } else {
+            console.log('CACHE MISS');
+
+            dadosClimaticos = await getWeather({ latitude, longitude });
+
+            weatherHash = gerarHash(dadosClimaticos.hoje);
+
+            await atualizarCache({
+                latitude: Number(latitude),
+                longitude: Number(longitude),
+                weatherHash,
+                hoje: dadosClimaticos.hoje,
+                previsaoDias: dadosClimaticos.previsaoDias,
+                resumoHorario: dadosClimaticos.resumoHorario,
+                rawData: dadosClimaticos
+            });
         }
-        console.log('CACHE MISS');
 
-        const data = await getWeather({ latitude, longitude });
-        const weatherHash = crypto
-            .createHash('sha256')
-            .update(JSON.stringify(data.previsaoDias))
-            .digest('hex');
-
-        await atualizarCache({
-            latitude: Number(latitude),
-            longitude: Number(longitude),
-            weatherHash,
-            hoje: data.hoje,
-            previsaoDias: data.previsaoDias,
-            resumoHorario: data.resumoHorario,
-            rawData: data
-        });
+        const insightAgronomico = await obterInsight(weatherHash, dadosClimaticos);
 
         return res.json({
             success: true,
-            data
+            data: {
+                ...dadosClimaticos,
+                insightAgronomico
+            }
         });
     } catch (error) {
         console.error(error);
