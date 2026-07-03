@@ -1,4 +1,4 @@
-const WeatherCache = require('../models/weatherCache');
+const WeatherCache = require('../models/WeatherCache');
 
 async function buscarCacheValido(latitude, longitude) {
 
