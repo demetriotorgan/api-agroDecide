@@ -2,15 +2,34 @@ const { buscarInsight, salvarInsight } = require('../repositories/insightReposit
 const { gerarInsight } = require('./geminiService');
 
 function validarDadosClimaticos(dadosClima){
-     if (!dadosClima) {
+      if (!dadosClima || typeof dadosClima !== 'object') {
         return {
             valido: false,
             erro: 'Objeto climático ausente'
         };
-    }    
-    return {
-        valido:true
     }
+
+    const camposObrigatorios = [
+        'temperaturaMax',
+        'temperaturaMin',
+        'precipitacao',
+        'chanceDeChuva'
+    ];
+
+    const camposAusentes = camposObrigatorios.filter(
+        campo => dadosClima[campo] === undefined || dadosClima[campo] === null
+    );
+
+    if (camposAusentes.length > 0) {
+        return {
+            valido: false,
+            erro: `Campos ausentes: ${camposAusentes.join(', ')}`
+        };
+    }
+
+    return {
+        valido: true
+    };
 };
 
 async function obterInsight(weatherHash,dadosClima) {

@@ -3,6 +3,7 @@ const getWeather = require('../services/openMeteoService');
 const { buscarCacheValido, salvarCache, atualizarCache } = require('../repositories/weatherCacheRepository');
 const { obterInsight } = require('../services/insightService');
 const gerarHash = require('../util/gerarHash');
+const { prepararDadosIA } = require('../mappers/insightMapper');
 
 module.exports.buscarClima = async (req, res) => {
     let dadosClimaticos;
@@ -40,7 +41,8 @@ module.exports.buscarClima = async (req, res) => {
             });
         }
 
-        const insightAgronomico = await obterInsight(weatherHash, dadosClimaticos);
+        const dadosIA = prepararDadosIA(dadosClimaticos.hoje);
+        const insightAgronomico = await obterInsight(weatherHash, dadosIA);
 
         return res.json({
             success: true,
