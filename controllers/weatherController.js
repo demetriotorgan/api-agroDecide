@@ -18,7 +18,12 @@ module.exports.buscarClima = async (req, res) => {
                 message: 'Latitude e longitude são obrigatórias'
             });
         }
+        console.log('Latitude:', latitude);
+        console.log('Longitude:', longitude);
         const cache = await buscarCacheValido(Number(latitude), Number(longitude));
+        console.log(
+            cache ? 'CACHE HIT' : 'CACHE MISS'
+        );
         if (cache) {
             console.log('CACHE HIT');
             dadosClimaticos = cache.rawData;
@@ -53,9 +58,23 @@ module.exports.buscarClima = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        if (
+            error.code ===
+            'OPEN_METEO_UNAVAILABLE'
+        ) {
+
+            return res.status(503).json({
+                success: false,
+                code: 'OPEN_METEO_UNAVAILABLE',
+                message:
+                    'O serviço meteorológico está temporariamente indisponível. Tente novamente em alguns minutos.'
+            });
+        }
+
+        return res.status(500).json({
             success: false,
-            message: "Erro ao buscar dados climáticos"
+            message:
+                'Erro interno ao buscar dados climáticos.'
         });
 
     }
