@@ -47,7 +47,13 @@ const weatherMapper = (data) => {
       data.hourly.wind_speed_10m?.[indiceAtual] ?? null,
 
     chanceChuvaAtual:
-      data.hourly.precipitation_probability?.[indiceAtual] ?? null
+      data.hourly.precipitation_probability?.[indiceAtual] ?? null,
+
+    umidadeAtual:
+      data.hourly.relative_humidity_2m[indiceAtual] ?? null,
+      
+    ventoAtual:
+      data.hourly.wind_speed_10m[indiceAtual] ?? null
   };
 
   return {
