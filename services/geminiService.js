@@ -27,10 +27,22 @@ async function gerarInsight(dadosClima) {
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
         const prompt = `
-            Você é um assistente agronômico.
-            Analise os dados climáticos abaixo:
+            Você é um Engenheiro Agrônomo especialista em monitoramento climático de precisão.
+            Sua tarefa é analisar os dados meteorológicos fornecidos e gerar um alerta prático de manejo para o produtor rural.
+
+            DADOS CLIMÁTICOS (JSON):
             ${JSON.stringify(dadosClima)}
-            Forneça uma recomendação curta, objetiva e prática para o produtor rural.
+
+            INSTRUÇÕES DE ANÁLISE:
+            1. Avalie a temperatura do dia atual e a tendência de chuva ao longo da semana.
+            2. Identifique oportunidades ou riscos para atividades como: aplicação de defensivos/fertilizantes, plantio, colheita ou irrigação.
+            3. Foque em ações preventivas com base no clima.
+
+            REGRAS DE FORMATAÇÃO (CRÍTICAS):
+            - O retorno deve ser exclusivamente em texto puro.
+            - Seja extremamente direto e prático. O produtor lerá isso em um aplicativo celular no campo.
+            - Limite a resposta a no máximo 2 ou 3 frases curtas (máximo de 250 caracteres).
+            - Não use saudações formais (como "Olá produtor"), vá direto ao ponto crítico.
             `;
         const result = await model.generateContent(prompt);
         return result.response.text();
@@ -45,4 +57,4 @@ async function gerarInsight(dadosClima) {
     }
 };
 
-module.exports =  {testarConexaoGemini, gerarInsight};
+module.exports = { testarConexaoGemini, gerarInsight };

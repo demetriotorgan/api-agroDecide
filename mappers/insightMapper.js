@@ -1,14 +1,15 @@
-function prepararDadosIA(dadosHoje) {
+function prepararDadosIA(dados) {
 
-    if (!dadosHoje) {
+    if (!dados) {
         return null;
     }
 
     return {
-        temperaturaMax: dadosHoje.temperaturaMaxima ?? null,
-        temperaturaMin: dadosHoje.temperaturaMinima ?? null,
-        precipitacao: dadosHoje.chuva ?? 0,
-        chanceDeChuva: dadosHoje.chanceChuva ?? 0
+        previsaoSemanal: dados.previsaoDias ?? null,
+        temperaturaMax: dados.hoje.temperaturaMaxima ?? null,
+        temperaturaMin: dados.hoje.temperaturaMinima ?? null,
+        precipitacao: dados.hoje.chuva ?? 0,
+        chanceDeChuva: dados.hoje.chanceChuva ?? 0
     };
 };
 

@@ -46,7 +46,8 @@ module.exports.buscarClima = async (req, res) => {
             });
         }
 
-        const dadosIA = prepararDadosIA(dadosClimaticos.hoje);
+        const dadosIA = prepararDadosIA(dadosClimaticos);
+        console.log(dadosIA);
         const insightAgronomico = await obterInsight(weatherHash, dadosIA);
 
         return res.json({
