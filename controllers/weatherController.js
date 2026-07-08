@@ -4,6 +4,8 @@ const { buscarCacheValido, salvarCache, atualizarCache } = require('../repositor
 const { obterInsight } = require('../services/insightService');
 const gerarHash = require('../util/gerarHash');
 const { prepararDadosIA } = require('../mappers/insightMapper');
+const { gerarIndicesClimaticos } = require('../climate-engine/agregadorIndices');
+const { gerarAnaliseClimatica } = require('../services/groqService');
 
 module.exports.buscarClima = async (req, res) => {
     let dadosClimaticos;
@@ -47,14 +49,24 @@ module.exports.buscarClima = async (req, res) => {
         }
 
         const dadosIA = prepararDadosIA(dadosClimaticos);
-        console.log(dadosIA);
+        //console.log(dadosIA);
         const insightAgronomico = await obterInsight(weatherHash, dadosIA);
+        
+        const indicesClimaticos = await gerarIndicesClimaticos(dadosClimaticos);
+        //console.log('Indices Climaticos: ', indicesClimaticos.plantio);
+        const analiseDePlantio = await gerarAnaliseClimatica('plantio',indicesClimaticos.plantio);
+        //console.log(analiseDePlantio);
+
 
         return res.json({
             success: true,
             data: {
                 ...dadosClimaticos,
-                insightAgronomico
+                insightAgronomico,
+                indices: indicesClimaticos,
+                analises:{
+                    analiseDePlantio
+                }
             }
         });
     } catch (error) {

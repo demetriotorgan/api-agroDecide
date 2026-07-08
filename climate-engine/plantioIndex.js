@@ -18,8 +18,8 @@ function calcularIndicePlantio(dadosClima) {
             .reduce((total, dia) => total + dia.chuva, 0);
 
     // Temperatura ideal
-    console.log('Temperatura media: ', temperaturaMedia);
-    console.log('Chuva7Dias: ', chuva7Dias);
+    // console.log('Temperatura media: ', temperaturaMedia);
+    // console.log('Chuva7Dias: ', chuva7Dias);
 
     if (temperaturaMedia >= 20 && temperaturaMedia <= 30) {
         pontos += 30;
