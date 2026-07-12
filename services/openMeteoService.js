@@ -19,7 +19,8 @@ const getWeather = async ({ latitude, longitude }) => {
             'temperature_2m_max',
             'temperature_2m_min',
             'precipitation_sum',
-            'precipitation_probability_max'
+            'precipitation_probability_max',
+            'et0_fao_evapotranspiration'
           ].join(','),
 
           hourly: [

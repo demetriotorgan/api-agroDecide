@@ -13,7 +13,7 @@ async function testarConexaoGemini() {
             resposta: result.response.text()
         };
     } catch (error) {
-        console.error("Erro Gemini:", error);
+        console.error("Erro Gemini:", error.message);
 
         return {
             sucesso: false,
@@ -52,8 +52,7 @@ async function gerarInsight(dadosClima) {
             "Erro ao gerar insight:",
             error.message
         );
-
-        throw error;
+         return "Análise inteligente temporariamente indisponível. Consulte os indicadores climáticos para apoiar sua tomada de decisão.";    
     }
 };
 

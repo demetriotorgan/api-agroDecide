@@ -34,10 +34,15 @@ async function atualizarCache(cacheData) {
       upsert: true
     }
   );
+};
+
+async function apagarCache(){
+  return WeatherCache.deleteMany({})
 }
 
 module.exports = {
   buscarCacheValido,
   salvarCache,
-  atualizarCache
+  atualizarCache,
+  apagarCache
 };

@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const getWeather = require('../services/openMeteoService');
-const { buscarCacheValido, salvarCache, atualizarCache } = require('../repositories/weatherCacheRepository');
+const { buscarCacheValido, salvarCache, atualizarCache, apagarCache } = require('../repositories/weatherCacheRepository');
 const { obterInsight } = require('../services/insightService');
 const gerarHash = require('../util/gerarHash');
 const { prepararDadosIA } = require('../mappers/insightMapper');
@@ -93,3 +93,21 @@ module.exports.buscarClima = async (req, res) => {
     }
 };
 
+module.exports.limparCache = async(req,res)=>{
+    try {
+        const resultado = await apagarCache();
+
+        return res.status(200).json({
+            success: true,
+            msg:'Cache limpo com sucesso'
+        });
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success:false,
+            msg:'Erro ao apagar cache',
+            erro: error.message
+        })
+    }
+}

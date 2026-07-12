@@ -11,12 +11,15 @@ const weatherMapper = (data) => {
     chanceChuva:
       data.daily.precipitation_probability_max?.[index] ?? 0,
     codigoClima:
-      data.daily.weather_code?.[index] ?? null
+      data.daily.weather_code?.[index] ?? null,
+    evapotranspiracao:
+      data.daily.et0_fao_evapotranspiration?.[index] ?? 0
   }));
 
   const hoje = previsaoDias[0];
 
   const agora = new Date();
+
   const horaAtual = `${agora.getFullYear()}-${String(
     agora.getMonth() + 1
   ).padStart(2, '0')}-${String(
