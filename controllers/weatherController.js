@@ -55,6 +55,7 @@ module.exports.buscarClima = async (req, res) => {
         const indicesClimaticos = await gerarIndicesClimaticos(dadosClimaticos);
         //console.log('Indices Climaticos: ', indicesClimaticos.plantio);
         const analiseDePlantio = await gerarAnaliseClimatica('plantio',indicesClimaticos.plantio);
+        const analiseDeIrrigacao = await gerarAnaliseClimatica('irrigacao', indicesClimaticos.irrigacao);
         //console.log(analiseDePlantio);
 
 
@@ -65,7 +66,8 @@ module.exports.buscarClima = async (req, res) => {
                 insightAgronomico,
                 indices: indicesClimaticos,
                 analises:{
-                    analiseDePlantio
+                    analiseDePlantio,
+                    analiseDeIrrigacao
                 }
             }
         });
@@ -101,7 +103,7 @@ module.exports.limparCache = async(req,res)=>{
             success: true,
             msg:'Cache limpo com sucesso'
         });
-        
+
     } catch (error) {
         console.error(error);
         res.status(500).json({
