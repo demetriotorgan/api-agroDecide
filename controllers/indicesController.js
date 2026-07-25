@@ -1,6 +1,6 @@
 const { gerarIndicesClimaticos } = require('../climate-engine/agregadorIndices');
 const { gerarAnaliseClimatica } = require('../services/groqService');
-const getWeather = require('../services/openMeteoService');
+const {getWeather} = require('../services/openMeteoService');
 
 module.exports.testeGroq = async (req, res) => {
     let dadosClimaticos;

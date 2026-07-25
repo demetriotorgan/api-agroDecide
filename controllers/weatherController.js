@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const getWeather = require('../services/openMeteoService');
+const {getWeather} = require('../services/openMeteoService');
 const { buscarCacheValido, salvarCache, atualizarCache, apagarCache } = require('../repositories/weatherCacheRepository');
 const { obterInsight } = require('../services/insightService');
 const gerarHash = require('../util/gerarHash');
