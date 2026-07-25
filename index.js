@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const connectDB = require('./config/db');
 const weatherRoutes = require('./routes/weatherRoutes');
+const historicalRoutes = require('./routes/historicalRoutes');
 
 const app = express();
 
@@ -18,7 +19,7 @@ app.get('/', (req,res)=>{
     })
 });
 
-app.use('/api', weatherRoutes);
+app.use('/api', weatherRoutes, historicalRoutes);
 
 //rodar localmente
 if(process.env.NODE_ENV !== 'production'){

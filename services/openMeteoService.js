@@ -1,6 +1,9 @@
 const api = require('./api');
 const weatherMapper = require('../mappers/weatherMapper');
+const historicalMapper = require('../mappers/historicalMapper');
+const historicalApi = require('./apiHistorical');
 
+//--------Previsão
 const getWeather = async ({ latitude, longitude }) => {
 
   let ultimaFalha;
@@ -60,4 +63,31 @@ const getWeather = async ({ latitude, longitude }) => {
   throw erro;
 };
 
-module.exports = getWeather;
+//--------Hitorico
+const getHistorical = async ({ latitude, longitude, start_date, end_date }) => {
+  try {
+    const response = await historicalApi.get('/archive', {
+      params: {
+        latitude,
+        longitude,
+        start_date,
+        end_date,
+        daily: [
+          'precipitation_sum',
+          'temperature_2m_mean',
+          'et0_fao_evapotranspiration'
+        ].join(',')
+      }
+    });
+    return historicalMapper(response.data);
+  } catch (error) {
+     console.error('Erro Open-Meteo:', {
+        message: error.message,
+        code: error.code,
+        status: error.response?.status,
+        data: error.response?.data
+    });
+  }
+}
+
+module.exports = {getWeather, getHistorical};
