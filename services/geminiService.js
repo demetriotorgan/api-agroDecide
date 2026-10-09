@@ -5,8 +5,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 async function testarConexaoGemini() {
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-        const result = await model.generateContent("Olá Gemini Teste de conexão, nas escuta?");
+        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
+        const result = await model.generateContent("Olá Gemini Teste de conexão, na escuta?");
 
         return {
             sucesso: true,

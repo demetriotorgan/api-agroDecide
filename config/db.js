@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 let isConnected = false;
 
-const connectDB = async()=>{
-    if(isConnected){
+const connectDB = async () => {
+    if (isConnected) {
         return
     };
 
@@ -12,7 +12,14 @@ const connectDB = async()=>{
         isConnected = db.connections[0].readyState;
         console.log(`MongoDB conectado ao banco: ${db.connection.name}`);
     } catch (error) {
-        console.error('Erro ao conectar ao MongoDB: ', error.message);
+        console.error('Nome do erro:', error.name);
+        console.error('Código:', error.code);
+        console.error('Mensagem:', error.message);
+
+        if (error.reason) {
+            console.error('Motivos da falha:', error.reason);
+        }
+
         process.exit(1);
     }
 };
