@@ -25,7 +25,7 @@ async function testarConexaoGemini() {
 // 2. Função de insight mantida separada
 async function gerarInsight(dadosClima) {
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
         const prompt = `
             Você é um Engenheiro Agrônomo especialista em monitoramento climático de precisão.
             Sua tarefa é analisar os dados meteorológicos fornecidos e gerar um alerta prático de manejo para o produtor rural.

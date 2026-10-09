@@ -8,7 +8,7 @@ async function salvarInsight(weatherHash, insight){
     return await InsightCache.create({
         weatherHash,
         insight,
-        modeloIA: 'gemini-2.5-flash'
+        modeloIA: 'gemini-3-flash-preview'
     });
 };
 
@@ -16,7 +16,7 @@ async function atualizarInisght(weatherHash, insight){
     return await InsightCache.findOneAndUpdate(
         {weatherHash},
         {insight},
-        {modeloIA: 'gemini-2.5-flash'},
+        {modeloIA: 'gemini-3-flash-preview'},
         {new: true, upsert:true}
     );
 };
