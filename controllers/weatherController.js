@@ -1,11 +1,12 @@
 const crypto = require('crypto');
-const {getWeather} = require('../services/openMeteoService');
+const { getWeather } = require('../services/openMeteoService');
 const { buscarCacheValido, salvarCache, atualizarCache, apagarCache } = require('../repositories/weatherCacheRepository');
 const { obterInsight } = require('../services/insightService');
 const gerarHash = require('../util/gerarHash');
 const { prepararDadosIA } = require('../mappers/insightMapper');
 const { gerarIndicesClimaticos } = require('../climate-engine/agregadorIndices');
 const { gerarAnaliseClimatica } = require('../services/groqService');
+const { apagarCacheInsights } = require('../repositories/insightRepository');
 
 module.exports.buscarClima = async (req, res) => {
     let dadosClimaticos;
@@ -51,10 +52,10 @@ module.exports.buscarClima = async (req, res) => {
         const dadosIA = prepararDadosIA(dadosClimaticos);
         //console.log(dadosIA);
         const insightAgronomico = await obterInsight(weatherHash, dadosIA);
-        
+
         const indicesClimaticos = await gerarIndicesClimaticos(dadosClimaticos);
         //console.log('Indices Climaticos: ', indicesClimaticos.plantio);
-        const analiseDePlantio = await gerarAnaliseClimatica('plantio',indicesClimaticos.plantio);
+        const analiseDePlantio = await gerarAnaliseClimatica('plantio', indicesClimaticos.plantio);
         const analiseDeIrrigacao = await gerarAnaliseClimatica('irrigacao', indicesClimaticos.irrigacao);
         //console.log(analiseDePlantio);
 
@@ -65,7 +66,7 @@ module.exports.buscarClima = async (req, res) => {
                 ...dadosClimaticos,
                 insightAgronomico,
                 indices: indicesClimaticos,
-                analises:{
+                analises: {
                     analiseDePlantio,
                     analiseDeIrrigacao
                 }
@@ -95,21 +96,27 @@ module.exports.buscarClima = async (req, res) => {
     }
 };
 
-module.exports.limparCache = async(req,res)=>{
+module.exports.limparCache = async (req, res) => {
     try {
-        const resultado = await apagarCache();
+        const resultadoClima = await apagarCache();
+        const resultadoInsights = await apagarCacheInsights();
 
         return res.status(200).json({
             success: true,
-            msg:'Cache limpo com sucesso'
+            msg: 'Caches climático e de insights limpos com sucesso',
+            removidos: {
+                cacheClimatico: resultadoClima?.deletedCount ?? null,
+                cacheInsights: resultadoInsights.deletedCount
+            }
         });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            success:false,
-            msg:'Erro ao apagar cache',
+        console.error('[Cache] Erro ao limpar caches:', error);
+
+        return res.status(500).json({
+            success: false,
+            msg: 'Erro ao apagar caches',
             erro: error.message
-        })
+        });
     }
 }

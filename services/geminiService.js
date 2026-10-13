@@ -25,6 +25,13 @@ async function testarConexaoGemini() {
 // 2. Função de insight mantida separada
 async function gerarInsight(dadosClima) {
     try {
+        console.log("[Gemini] Iniciando geração do insight.");
+        console.log("[Gemini] Dados recebidos:", {
+            tipo: typeof dadosClima,
+            chaves: dadosClima && typeof dadosClima === "object"
+                ? Object.keys(dadosClima)
+                : []
+        });
         const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
         const prompt = `
             Você é um Engenheiro Agrônomo especialista em monitoramento climático de precisão.
@@ -44,15 +51,25 @@ async function gerarInsight(dadosClima) {
             - Limite a resposta a no máximo 2 ou 3 frases curtas (máximo de 250 caracteres).
             - Não use saudações formais (como "Olá produtor"), vá direto ao ponto crítico.
             `;
+
+        console.log("[Gemini] Enviando requisição...");
         const result = await model.generateContent(prompt);
-        return result.response.text();
+        const resposta = result.response.text();
+        console.log("[Gemini] Requisição concluída.", {
+            respostaRecebida: Boolean(resposta),
+            tamanhoResposta: resposta?.length ?? 0
+        });
+
+        return resposta;
 
     } catch (error) {
-        console.error(
-            "Erro ao gerar insight:",
-            error.message
-        );
-         return "Análise inteligente temporariamente indisponível. Consulte os indicadores climáticos para apoiar sua tomada de decisão.";    
+        console.error("[Gemini] FALHA NA GERAÇÃO DO INSIGHT");
+        console.error("Nome:", error.name);
+        console.error("Mensagem:", error.message);
+        console.error("Status:", error.status);
+        console.error("Detalhes:", error.errorDetails);
+        console.error("Stack:", error.stack);
+        return "Análise inteligente temporariamente indisponível. Consulte os indicadores climáticos para apoiar sua tomada de decisão.";
     }
 };
 

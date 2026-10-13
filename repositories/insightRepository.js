@@ -12,6 +12,10 @@ async function salvarInsight(weatherHash, insight){
     });
 };
 
+async function apagarCacheInsights() {
+    return await InsightCache.deleteMany({});
+}
+
 async function atualizarInisght(weatherHash, insight){
     return await InsightCache.findOneAndUpdate(
         {weatherHash},
@@ -21,4 +25,4 @@ async function atualizarInisght(weatherHash, insight){
     );
 };
 
-module.exports = {buscarInsight, salvarInsight, atualizarInisght}
+module.exports = {buscarInsight, salvarInsight, atualizarInisght, apagarCacheInsights}
